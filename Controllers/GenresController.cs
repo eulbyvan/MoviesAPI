@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MoviesAPI.Entities;
 using MoviesAPI.Services;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace MoviesAPI.Controllers
 {
     [Route("/api/genres")]
-    //[ApiController]
+    [ApiController]
     public class GenresController: ControllerBase
     {
         private readonly IRepository repository;
@@ -22,40 +23,42 @@ namespace MoviesAPI.Controllers
         [HttpGet] // api/genres
         [HttpGet("list")] // api/genres/list
         [HttpGet("/allgenres")] // allgenres
-        public List<Genre> Get()
+        public async Task<ActionResult<List<Genre>>> Get()
         {
-            return repository.GetAllGenres();
+            return await repository.GetAllGenres();
         }
 
-        [HttpGet("{Id:int}/{param2=stu}")] // api/genres/example
-        public Genre Get(int Id, string param2)
+        [HttpGet("{Id:int}")] // api/genres/example
+        public ActionResult<Genre> Get(int Id, [FromServices] string param2)
         {
             var genre = repository.GetGenreById(Id);
 
             if (genre == null)
             {
-                //return NotFound();
+                return NotFound();
             }
 
+            //return Ok(2);
+            //return Ok("stu");
             return genre;
         }
 
         [HttpPost]
-        public void Post()
+        public ActionResult Post([FromBody] Genre genre)
         {
-
+            return NoContent();
         }
 
         [HttpPut]
-        public void Put()
+        public ActionResult Put([FromBody] Genre genre)
         {
-
+            return NoContent();
         }
 
         [HttpDelete]
-        public void Delete()
+        public ActionResult Delete()
         {
-
+            return NoContent();
         }
     }
 }
